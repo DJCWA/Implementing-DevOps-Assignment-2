@@ -1,21 +1,33 @@
-# cloudbuild.yaml — Assignment 2 (Step 5: CI only)
+# cloudbuild.yaml — CI + CD
 steps:
-  # Build Docker image
+  # 1) Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'build',
-        '-t',
-        'us-central1-docker.pkg.dev/$PROJECT_ID/daniel-100624358/assignment2:${SHORT_SHA}',
+        '-t','us-central1-docker.pkg.dev/$PROJECT_ID/daniel-100624358/assignment2:${SHORT_SHA}',
         '.'
       ]
 
-  # Push Docker image to Artifact Registry
+  # 2) Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'push',
         'us-central1-docker.pkg.dev/$PROJECT_ID/daniel-100624358/assignment2:${SHORT_SHA}'
+      ]
+
+  # 3) Deploy to Cloud Run (google cloud-sdk container)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      [
+        'run','deploy','daniel-100624358-svc',
+        '--image','us-central1-docker.pkg.dev/$PROJECT_ID/daniel-100624358/assignment2:${SHORT_SHA}',
+        '--region','us-central1',
+        '--platform','managed',
+        '--allow-unauthenticated',
+        '--port','8080'
       ]
 
 images:
