@@ -1,0 +1,25 @@
+# cloudbuild.yaml — Assignment 2 (Step 5: CI only)
+steps:
+  # Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'build',
+        '-t',
+        'us-central1-docker.pkg.dev/$PROJECT_ID/daniel-100624358/assignment2:${SHORT_SHA}',
+        '.'
+      ]
+
+  # Push Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      [
+        'push',
+        'us-central1-docker.pkg.dev/$PROJECT_ID/daniel-100624358/assignment2:${SHORT_SHA}'
+      ]
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/daniel-100624358/assignment2:${SHORT_SHA}'
+
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
