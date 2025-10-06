@@ -1,20 +1,16 @@
+# cloudbuild.yaml — Assignment 2 (Step 5: CI only)
 steps:
-  # Debug: show what's in the workspace
-  - name: alpine
-    entrypoint: sh
-    args: ['-lc', 'echo "PWD=$(pwd)"; echo "--- ls -la:"; ls -la']
-
-  # Build Docker image (explicitly point to Dockerfile at root)
+  # Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
         'build',
-        '-f','Dockerfile',
-        '-t','us-central1-docker.pkg.dev/$PROJECT_ID/daniel-100624358/assignment2:${SHORT_SHA}',
+        '-t',
+        'us-central1-docker.pkg.dev/$PROJECT_ID/daniel-100624358/assignment2:${SHORT_SHA}',
         '.'
       ]
 
-  # Push Docker image
+  # Push Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       [
